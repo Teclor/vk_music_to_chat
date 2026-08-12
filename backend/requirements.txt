@@ -1,4 +1,0 @@
-fastapi
-uvicorn
-vk_api
-pydantic

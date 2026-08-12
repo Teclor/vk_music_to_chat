@@ -1,0 +1,21 @@
+services:
+  frontend:
+    build:
+      context: ../frontend
+    ports:
+      - "80:80"
+      - "443:443" # Открыли порт для HTTPS
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt:ro  # Nginx только читает сертификаты (Read-Only)
+      - ./certbot/www:/var/www/certbot:ro   # Чтение папки для проверки домена
+    restart: unless-stopped
+
+  # Сервис авто-продления сертификатов
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    # Проверяет необходимость обновления каждые 12 часов
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    restart: unless-stopped

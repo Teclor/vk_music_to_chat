@@ -13,7 +13,7 @@
 </template>
 <script setup>
 import { ref, onMounted } from 'vue';
-import { fetchApi } from '../services/api';
+import { getAlbums } from '../services/api';
 const props = defineProps(['token']);
 const emit = defineEmits(['select']);
 const albums = ref([]);
@@ -21,7 +21,7 @@ const loading = ref(false);
 
 onMounted(async () => {
   loading.value = true;
-  try { albums.value = await fetchApi('/albums', props.token); } 
+  try { albums.value = await getAlbums(props.token); }
   catch (e) { console.error(e); }
   loading.value = false;
 });

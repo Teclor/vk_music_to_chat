@@ -19,7 +19,7 @@
 </template>
 <script setup>
 import { ref, onMounted } from 'vue';
-import { fetchApi } from '../services/api';
+import { getChats } from '../services/api';
 const props = defineProps(['token']);
 const emit = defineEmits(['select']);
 const chats = ref([]);
@@ -28,7 +28,7 @@ const loading = ref(false);
 
 const loadChats = async () => {
   loading.value = true;
-  try { chats.value = await fetchApi(`/chats?limit=${chatLimit.value}`, props.token); }
+  try { chats.value = await getChats(chatLimit.value, props.token); }
   catch (e) { console.error(e); }
   loading.value = false;
 };

@@ -17,7 +17,7 @@ import AuthStep from './components/AuthStep.vue';
 import ChatSelector from './components/ChatSelector.vue';
 import AlbumSelector from './components/AlbumSelector.vue';
 import TrackManager from './components/TrackManager.vue';
-import { fetchApi } from './services/api';
+import { getMe } from './services/api';
 
 const token = ref(null);
 const user = ref(null);
@@ -25,8 +25,12 @@ const selectedChat = ref(null);
 const selectedAlbum = ref(null);
 
 const loadUser = async () => {
-  try { user.value = await fetchApi('/me', token.value); } 
-  catch (e) { if(e.message === 'UNAUTHORIZED') logout(); }
+  try {
+    user.value = await getMe(token.value);
+  } catch (e) {
+    // Если ошибка содержит 5 (проблема с токеном/IP), выкидываем пользователя
+    if(e.message.includes('[5]')) logout();
+  }
 };
 
 const login = (t) => {
